@@ -1,9 +1,10 @@
 [package]
-name = "desktop-client"
+name = "auth"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-fltk = { version = "^1.2", features = ["fltk-bundled"] }
+rocket = "0.5.0-rc.1"
+auth_service = { version = "0.1.0", path = "./auth_service"}
