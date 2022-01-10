@@ -32,9 +32,7 @@ struct RegisterRequest {
   username: String,
   email: String,
   password: String,
-  password_confirm: String,
-  #[field(validate = one_of("SA".chars()))]
-  user_type: String,
+  password_confirm: String
 }
 
 
@@ -43,7 +41,7 @@ fn register(req: Form<RegisterRequest>) -> &'static str {
     if req.password != req.password_confirm {
         return "err"
     }
-    auth_service::register(&req.username, &req.email, &req.password, &req.user_type).unwrap();
+    auth_service::register(&req.username, &req.email, &req.password).unwrap();
     "Register Success"
 }
 

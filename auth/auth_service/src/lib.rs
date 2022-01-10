@@ -40,13 +40,13 @@ pub fn do_login(username: &String, password: &String) -> Result<String, diesel::
         })
 }
 
-pub fn register(username: &String, email: &String, password: &String, user_type: &String) -> Result<String, String> {
+pub fn register(username: &String, email: &String, password: &String) -> Result<String, String> {
     use models::{NewUser, User};
     use schema::user;
     
     let conn = establish_connection();
 
-    let new_user = NewUser::create(username, email, password, user_type);
+    let new_user = NewUser::create(username, email, password);
     let insert_result = diesel::insert_into(user::table)
         .values(&new_user)
         .get_result::<User>(&conn);

@@ -42,12 +42,12 @@ pub struct NewUser {
 }
 
 impl NewUser {
-  pub fn create(username: &String, email: &String, password: &String, user_type: &String) -> NewUser {
+  pub fn create(username: &String, email: &String, password: &String) -> NewUser {
     NewUser {
       username: String::from(username),
       email: String::from(email),
       password_hash: hash_password(password),
-      user_type: String::from(user_type)
+      user_type: String::from("S")
     }
   }
 }
