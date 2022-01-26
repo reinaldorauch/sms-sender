@@ -1,0 +1,18 @@
+services:
+  ping:
+    build: "ping/."
+    ports:
+      - "8000:8000"
+
+  api-gateway:
+    depends_on:
+      - ping
+    links:
+      - "ping:ping-service"
+    build: "api_gateway/."
+    ports:
+      - "8080:80"
+    environment:
+      - NGINX_HOST=localhost
+      - NGINX_PORT=80
+
