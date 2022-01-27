@@ -1,11 +1,18 @@
 // Using macros from rocket crate
 #[macro_use] extern crate rocket;
+#[macro_use] extern crate diesel;
+extern crate dotenv;
 
 // Telling cargo that the tests are in tests module
 #[cfg(test)] mod tests;
 
+mod jwt;
+mod auth_service;
+mod models;
+mod schema;
+
 use rocket::{Rocket, Build, form::Form};
-use auth_service;
+use jwt::Claims;
 
 // This route tells a cluster manager that this service is well and can receive
 // requests
@@ -16,8 +23,8 @@ fn healthcheck() -> &'static str {
 
 #[derive(FromForm, Clone)]
 struct LoginRequest {
-  username: String,
-  password: String
+    username: String,
+    password: String
 }
 
 
@@ -29,12 +36,11 @@ fn login(login: Form<LoginRequest>) -> String {
 
 #[derive(FromForm, Clone)]
 struct RegisterRequest {
-  username: String,
-  email: String,
-  password: String,
-  password_confirm: String
+    username: String,
+    email: String,
+    password: String,
+    password_confirm: String
 }
-
 
 #[post("/register", data = "<req>")]
 fn register(req: Form<RegisterRequest>) -> &'static str {
@@ -47,20 +53,19 @@ fn register(req: Form<RegisterRequest>) -> &'static str {
 
 #[post("/logout")]
 fn logout() -> &'static str {
-  "Success logout"
+    "Success logout"
 }
 
-// Error routes
-#[catch(404)]
-fn not_found() -> &'static str {
-    "Not found"
+#[get("/verify")]
+fn verify(payload: Claims) -> &'static str {
+    println!("{:?}", payload);
+    "Verified"
 }
 
 fn rocket() -> Rocket<Build> {
     // This is the root of the api
     rocket::build()
-        .mount("/", routes![healthcheck, login, register, logout])
-        .register("/", catchers![not_found])
+        .mount("/", routes![healthcheck, login, register, logout, verify])
 }
 
 #[rocket::main]

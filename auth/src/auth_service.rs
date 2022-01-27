@@ -1,15 +1,8 @@
-#[macro_use]
-extern crate diesel;
-extern crate dotenv;
-
 use diesel::prelude::*;
 use diesel::pg::PgConnection;
 use dotenv::dotenv;
 use std::env;
 
-pub mod models;
-pub mod schema;
-mod jwt;
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
@@ -29,11 +22,11 @@ pub fn do_login(username: &String, password: &String) -> Result<String, diesel::
     conn.build_transaction()
         .read_only()
         .run(|| {
-            use models::User;
+            use super::models::User;
 
             let user = User::find_by_username(&conn, username);
             if user.verify_password(password) {
-                Ok(jwt::create_jwt(&user))
+                Ok(super::jwt::create_jwt(&user))
             } else {
                 Err(diesel::result::Error::NotFound)
             }
@@ -41,8 +34,8 @@ pub fn do_login(username: &String, password: &String) -> Result<String, diesel::
 }
 
 pub fn register(username: &String, email: &String, password: &String) -> Result<String, String> {
-    use models::{NewUser, User};
-    use schema::user;
+    use super::models::{NewUser, User};
+    use super::schema::user;
     
     let conn = establish_connection();
 
@@ -56,5 +49,3 @@ pub fn register(username: &String, email: &String, password: &String) -> Result<
         Err(err) => Err(format!("Could not insert user: {}", err))
     }
 }
-
-#[cfg(test)] mod tests;

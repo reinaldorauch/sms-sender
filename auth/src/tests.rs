@@ -40,3 +40,16 @@ fn test_logout() {
   assert_eq!(response.status(), Status::Ok);
   assert_eq!(response.into_string().unwrap(), super::logout())
 }
+
+#[test]
+pub fn test_do_login() {
+  let username = String::from("ReinaldoRauch");
+  let password = String::from("oloco");
+  assert_eq!(
+    super::auth_service::do_login(
+      &username,
+      &password
+    ), 
+    String::from("ReinaldoRauch: oloco")
+  )
+}

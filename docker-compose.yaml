@@ -4,11 +4,27 @@ services:
     ports:
       - "8000:8000"
 
+  auth:
+    build: "auth/."
+    ports:
+      - "8001:8001"
+    links:
+      - "auth-postgres"
+    environment:
+      - DATABASE_URL=postgres://postgres:lorota@auth-postgres/sms-sender-auth
+
+  auth-postgres:
+    image: postgres:alpine
+    volumes:
+      - auth_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=lorota
+      - PGDATA=/var/lib/postgresql/data/pgdata
+
   api-gateway:
-    depends_on:
-      - ping
     links:
       - "ping:ping-service"
+      - "auth:auth-service"
     build: "api_gateway/."
     ports:
       - "8080:80"
@@ -16,3 +32,5 @@ services:
       - NGINX_HOST=localhost
       - NGINX_PORT=80
 
+volumes:
+  auth_data:

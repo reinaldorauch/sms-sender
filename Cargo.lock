@@ -114,18 +114,11 @@ dependencies = [
 name = "auth"
 version = "0.1.0"
 dependencies = [
- "auth_service",
- "rocket",
-]
-
-[[package]]
-name = "auth_service"
-version = "0.1.0"
-dependencies = [
  "argonautica",
  "diesel",
  "dotenv",
  "jsonwebtoken",
+ "rocket",
  "serde",
 ]
 
